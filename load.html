@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>App Loader</title>
+</head>
+<body>
+<div id="stage"></div>
+
+<script>
+async function loadPage(file) {
+  const res = await fetch(file);
+  return res.text();
+}
+
+async function startApp() {
+  const stage = document.getElementById('stage');
+
+  // Step 1: Load Login
+  stage.innerHTML = await loadPage('login.html');
+
+  // expose login transition
+  window.goToIntro = async function() {
+    stage.innerHTML = await loadPage('intro.html');
+    setTimeout(goToMain, 3000);
+  };
+
+  // Step 2: Go to Main
+  window.goToMain = async function() {
+    stage.innerHTML = await loadPage('index.html');
+  };
+}
+
+startApp();
+</script>
+</body>
+</html>

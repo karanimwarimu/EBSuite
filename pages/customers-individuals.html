@@ -1,0 +1,478 @@
+
+    
+<style>
+/* Scoped CSS for Data Grid page */
+.data-grid-container {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Controls */
+.header-controls {
+    border-bottom: 1px solid #ddd;
+}
+
+/* Filter + Search Bars */
+.top-filter-bar {
+    display: flex;
+    align-items: center;
+    padding: 4px 15px;
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #ddd;
+    font-size: 13px;
+    color: #555;
+}
+.top-filter-bar label, .top-filter-bar select {
+    margin-right: 5px;
+}
+.top-filter-bar select {
+    border: 1px solid #ccc;
+    padding: 3px;
+    font-size: 13px;
+}
+
+/* Slanted Links */
+.status-links {
+    margin-left: auto;
+    display: flex;
+    height: 30px;
+    font-weight: bold;
+}
+.status-link {
+    display: flex;
+    align-items: center;
+    padding: 0 15px 0 25px;
+    text-decoration: none;
+    color: #777;
+    cursor: pointer;
+    background-color: #ddd;
+    position: relative;
+    transition: all 0.1s;
+}
+.status-link:before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: inherit;
+    z-index: -1;
+    transform: skewX(-15deg);
+    transform-origin: top left;
+}
+.status-link.active { background-color: #c8e6c9; color: black; }
+.status-link.dormant { background-color: #ffe0b2; }
+.status-link.black-list { background-color: #ffcdd2; }
+
+/* Search & Group bar */
+.search-and-group-bar {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    background-color: #e0e0e0;
+    height: 35px;
+}
+.view-group {
+    background-color: #d1e7c8;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    border-right: 1px solid #ccc;
+}
+.search-group {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+}
+#searchInput {
+    border: none;
+    width: 250px;
+    background-color: transparent;
+    outline: none;
+    font-size: 13px;
+}
+.group-by-box {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #555;
+    font-size: 13px;
+}
+.group-by-box span { font-weight: bold; }
+
+/* Data Table */
+.data-table-wrapper {
+    flex: 1;
+    overflow: auto;
+}
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.data-table th, .data-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #eee;
+    white-space: nowrap;
+    font-size: 13px;
+}
+.data-table th {
+    background-color: #e0e0e0;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}
+.data-table tr:hover { background-color: #e3f2fd; cursor: pointer; }
+.data-table tr.selected { background-color: #81d4fa; border-left: 5px solid #2196F3; }
+.data-table tr.green-row { background-color: #e8f5e9; }
+
+/* Footer */
+.footer-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px;
+    border-top: 1px solid #ddd;
+    background-color: #e0e0e0;
+    font-size: 13px;
+}
+.add-import-buttons button {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    cursor: pointer;
+    background-color: #fff;
+}
+.pagination-buttons button {
+    background: #fff;
+    border: 1px solid #aaa;
+    padding: 2px 5px;
+    margin: 0 1px;
+    cursor: pointer;
+    border-radius: 2px;
+    font-size: 11px;
+}
+
+/* Modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    padding-top: 60px;
+}
+.modal-content {
+    background-color: #fff;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 5px;
+}
+.modal-close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    cursor: pointer;
+}
+.modal-close:hover { color: #000; }
+</style>
+
+    <div class="data-grid-container">
+        <div class="header-controls">
+            <div class="top-filter-bar">
+                <span class="icon-small">📅</span>
+                <label>Date Filters</label>
+                <select><option>2025</option></select>
+                <select><option>November</option></select>
+                <label>From:</label>
+                <select><option>11/02/2025</option></select>
+                <label>To:</label>
+                <select><option>11/02/2025</option></select>
+                
+                <div class="status-links">
+                    <a href="#" class="status-link">All</a>
+                    <a href="#" class="status-link active">Active</a>
+                    <a href="#" class="status-link dormant">Dormant</a>
+                    <a href="#" class="status-link black-list">Black-List</a>
+                </div>
+            </div>
+
+            <div class="search-and-group-bar">
+                <div class="view-group">
+                    <span class="icon-warning">&#9888;</span> 
+                    <span class="icon-view">view</span>
+                </div>
+                
+                <div class="search-group">
+                    <span class="icon-small">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Type here to search">
+                </div>
+                
+                <div class="group-by-box">
+                    <span>Group By</span>
+                    <span class="icon-action" style="font-size: 16px;">🔄</span> 
+                </div>
+            </div>
+        </div>
+        
+        <div class="data-table-wrapper">
+            <table class="data-table" id="dataTable">
+                <thead>
+                    <tr>
+                        <th style="width: 30px;"></th> 
+                        <th style="width: 30px;"></th>
+                        <th>ID</th> 
+                        <th>National ID</th>
+                        <th style="margin-left: -100px;">Customer Name</th>
+                        <th>Mobile</th>
+                        <th>Active</th>
+                        <th></th>
+                        <th>LTA</th>
+                        
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    </tbody>
+            </table>
+        </div>
+
+        <div class="footer-controls">
+            <div class="add-import-buttons">
+                <button onclick="navigateToAddPage()">
+                    <span class="icon-add-new">➕</span>
+                    Add New
+                </button>
+                <button>Import <span style="font-size: 14px;">🡹</span></button>
+            </div>
+            <div class="pagination-info">
+                <span>Total Records: <span id="totalRecords">4573</span></span>
+                <span>Size: 20</span>
+                <div class="pagination-buttons">
+                    <button>⏮</button> 
+                    <button>◀</button> 
+                    <span>Pg 1/229</span>
+                    <button>▶</button> 
+                    <button>⏭</button> 
+                </div>
+            </div>
+        </div>
+        <div style="background-color: #e0e0e0; height: 10px;"></div> 
+    </div>
+
+    <div id="customerModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Customer Details</h2>
+            <form id="customerForm" data-action="">
+                <label for="modal_id">Customer ID:</label>
+                <input type="text" id="modal_id" name="id" readonly>
+
+                <label for="modal_name">Customer Name:</label>
+                <input type="text" id="modal_name" name="name">
+                
+                <label for="modal_mobile">Mobile:</label>
+                <input type="text" id="modal_mobile" name="mobile">
+                
+                <label for="modal_nationalId">National ID:</label>
+                <input type="text" id="modal_nationalId" name="nationalId">
+                
+                <button type="button" onclick="saveCustomer()">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+   <script>
+(() => {
+    // --- DATA ---
+    const data = [
+        { type: 'selected', id: 'CCIN004557', nationalId: '24823040', name: 'ANTHONY NZAI KYENDI', mobile: '254725737749', active: true, lta: 0 },
+        { type: 'normal', id: 'CCIN004559', nationalId: '2781910', name: 'DENNIS ODUOR ONYANGO', mobile: '07112244577', active: true, lta: 0 },
+        { type: 'normal', id: 'CCIN004567', nationalId: '10810442', name: 'HILARY WENDO SHIMOLI', mobile: '0722519022', active: true, lta: 0 },
+        { type: 'normal', id: 'CCIN004558', nationalId: '9881888', name: 'OMAR MWALIMU GANYUMA', mobile: '0769292776', active: true, lta: 0 },
+        { type: 'normal', id: 'CCIN004565', nationalId: '23089760', name: 'ESTHER MBITHE NGILA', mobile: '254720902636', active: true, lta: 0 },
+        { type: 'normal', id: 'CCIN004553', nationalId: '20020781', name: 'CHRISTINE AWINO OJWANG', mobile: '254721670543', active: true, lta: 0 },
+        { type: 'normal', id: 'CCIN004554', nationalId: '23114532', name: 'NICHOLAS OMONDI MUGWANGA', mobile: '254720434880', active: true, lta: 0 },
+        { type: 'normal', id: 'CCIN004555', nationalId: '25086290', name: 'MARY WAMBUI MURITHI', mobile: '254726902590', active: true, lta: 0 },
+        { type: 'normal', id: 'CCIN004556', nationalId: '23904693', name: 'GODFREY NGURE MURIGI', mobile: '0723713115', active: true, lta: 0 },
+        { type: 'normal', id: 'CCIN004560', nationalId: '8890851', name: 'JENARO IRERI NJOKA', mobile: '254725533983', active: true, lta: 0 },
+        { type: 'normal', id: 'CCIN004561', nationalId: '23177915', name: 'BONVENTURE OKANGA NAPHTALI', mobile: '0720931542', active: true, lta: 0 },
+        { type: 'normal', id: 'CCIN004562', nationalId: '27888020', name: 'CHERUYOT LINUS', mobile: '254715313095', active: true, lta: 0 },
+        { type: 'normal', id: 'CCIN004563', nationalId: '22203290', name: 'PETER KAMAU MURAGURI', mobile: '254721813571', active: true, lta: 0 },
+        { type: 'normal', id: 'CCIN004564', nationalId: '20428636', name: 'WANDERA SYLVESTER/WANDER SECURITY SERVICES LIMITED', mobile: '254728683518', active: true, lta: 0 },
+        { type: 'green', id: 'CCIN004566', nationalId: '27289107', name: 'MARGARET WANJA KUNGU', mobile: '0725413343', active: true, lta: 0 },
+        { type: 'green', id: 'CCIN004568', nationalId: '9947195', name: 'SABASTIAN NGUIGI MUNGAI', mobile: '0726425764', active: true, lta: 0 },
+        { type: 'green', id: 'CCIN004569', nationalId: '26460169', name: 'ROSEMARY KABURA HAMISI', mobile: '254729813599', active: true, lta: 0 },
+        { type: 'green', id: 'CCIN004570', nationalId: '31787549', name: 'KENNEDY WAMBUA MUTUKU', mobile: '254715111073', active: true, lta: 0 },
+        { type: 'green', id: 'CCIN004571', nationalId: '10766956', name: 'JOHN NJAU KARUGA', mobile: '0722753093', active: true, lta: 0 },
+        { type: 'green', id: 'CCIN004572', nationalId: '10273523', name: 'BENADETTE WAITHIRA KABIRU', mobile: '254713934668', active: true, lta: 0 },
+    ];
+
+    const tableBody = document.getElementById('tableBody');
+    const searchInput = document.getElementById('searchInput');
+    const customerModal = document.getElementById('customerModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const customerForm = document.getElementById('customerForm');
+    let selectedRow = null;
+
+    // --- MODAL ---
+    function closeModal() {
+        customerModal.style.display = 'none';
+    }
+
+    function showCustomerDetails(customer, isEdit) {
+        customerForm.dataset.action = isEdit ? 'edit' : 'view';
+        modalTitle.textContent = isEdit ? `Edit Customer: ${customer.id}` : `View Details: ${customer.id}`;
+
+        document.getElementById('modal_id').value = customer.id;
+        document.getElementById('modal_name').value = customer.name;
+        document.getElementById('modal_mobile').value = customer.mobile;
+        document.getElementById('modal_nationalId').value = customer.nationalId;
+
+        const readOnly = !isEdit;
+        document.getElementById('modal_name').readOnly = readOnly;
+        document.getElementById('modal_mobile').readOnly = readOnly;
+        document.getElementById('modal_nationalId').readOnly = readOnly;
+
+        customerModal.style.display = 'block';
+    }
+
+    function navigateToAddPage() {
+        customerForm.dataset.action = 'add';
+        modalTitle.textContent = 'Add New Customer';
+
+        document.getElementById('modal_id').value = 'New ID will be generated';
+        document.getElementById('modal_name').value = '';
+        document.getElementById('modal_mobile').value = '';
+        document.getElementById('modal_nationalId').value = '';
+
+        document.getElementById('modal_name').readOnly = false;
+        document.getElementById('modal_mobile').readOnly = false;
+        document.getElementById('modal_nationalId').readOnly = false;
+
+        customerModal.style.display = 'block';
+    }
+
+    function saveCustomer() {
+        const action = customerForm.dataset.action;
+
+        if (action === 'add') {
+            if (!customerForm.elements.name.value || !customerForm.elements.mobile.value) {
+                alert('Please fill in Customer Name and Mobile.');
+                return;
+            }
+
+            const newId = 'CCIN' + (Math.floor(Math.random() * 1000) + 5000);
+            const newCustomer = {
+                type: 'normal',
+                id: newId,
+                nationalId: customerForm.elements.nationalId.value || 'N/A',
+                name: customerForm.elements.name.value,
+                mobile: customerForm.elements.mobile.value,
+                active: true,
+                lta: 0
+            };
+            data.unshift(newCustomer);
+            alert(`New Customer ${newId} added successfully!`);
+        } else if (action === 'edit') {
+            const customerId = customerForm.elements.id.value;
+            const existing = data.find(c => c.id === customerId);
+            if (existing) {
+                existing.name = customerForm.elements.name.value;
+                existing.mobile = customerForm.elements.mobile.value;
+                existing.nationalId = customerForm.elements.nationalId.value;
+                alert(`Customer ${customerId} updated successfully!`);
+            }
+        }
+
+        closeModal();
+        renderTable(data);
+    }
+
+    // --- TABLE ---
+    function renderTable(displayData) {
+        tableBody.innerHTML = '';
+        document.getElementById('totalRecords').textContent = displayData.length;
+
+        displayData.forEach(item => {
+            const row = tableBody.insertRow();
+            row.dataset.customerId = item.id;
+
+            if (item.type === 'green') row.classList.add('green-row');
+            if (item.type === 'selected') {
+                row.classList.add('selected');
+                selectedRow = row;
+            }
+
+            const createActionCell = (icon, cls, action) => {
+                const cell = row.insertCell();
+                cell.classList.add('icon-col');
+                const span = document.createElement('span');
+                span.className = cls;
+                span.textContent = icon;
+                span.onclick = e => {
+                    e.stopPropagation();
+                    action(item);
+                };
+                cell.appendChild(span);
+                return cell;
+            };
+
+            createActionCell('🔍', 'icon-view', c => showCustomerDetails(c, false));
+            createActionCell('✏️', 'icon-edit', c => showCustomerDetails(c, true));
+
+            row.insertCell().textContent = item.id;
+            row.insertCell().textContent = item.nationalId;
+            row.insertCell().textContent = item.name;
+            row.insertCell().textContent = item.mobile;
+
+            const check = row.insertCell();
+            check.classList.add('checkbox-col');
+            check.innerHTML = `<input type="checkbox" ${item.active ? 'checked' : ''} disabled>`;
+
+            row.insertCell().textContent = item.lta;
+            row.insertCell().innerHTML = `<span class="icon-lta">🔗</span>`;
+
+            row.addEventListener('click', () => handleRowClick(row));
+        });
+    }
+
+    function handleRowClick(row) {
+        if (selectedRow) selectedRow.classList.remove('selected');
+        row.classList.add('selected');
+        selectedRow = row;
+    }
+
+    function handleSearch() {
+        const term = searchInput.value.toLowerCase();
+        const filtered = data.filter(item =>
+            item.id.toLowerCase().includes(term) ||
+            item.nationalId.toLowerCase().includes(term) ||
+            item.name.toLowerCase().includes(term) ||
+            item.mobile.toLowerCase().includes(term)
+        );
+        renderTable(filtered);
+    }
+
+    window.onclick = e => {
+        if (e.target == customerModal) closeModal();
+    };
+
+    // --- INIT ---
+    renderTable(data);
+    searchInput.addEventListener('input', handleSearch);
+})();
+</script>
+
+    
+
