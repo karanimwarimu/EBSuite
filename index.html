@@ -744,6 +744,9 @@ body {
             color: #ff0000; 
             font-size: 1.1rem;
         }
+        .end-shift-btn{
+            margin-right: -90px;
+        }
 
         .tab-item {
             height: calc(var(--tab-bar-height) - 4px); 
@@ -857,7 +860,7 @@ body {
             font-size: 0.9rem;
             color: #4b5563;
             position: absolute;
-            top: 20px; 
+            top: 17px; 
         }
 
         .home-header-info .date-input {
@@ -866,7 +869,7 @@ body {
             border-radius: 4px;
             font-size: 0.9rem;
             margin-left: 5px;
-            margin-right: 500px;
+            margin-right: 400px;
         }
         
         .home-header-info .end-shift-btn {
@@ -875,7 +878,7 @@ body {
             padding: 2px 5px;
             border-radius: 6px;
             font-weight: 600;
-            margin-right: 10px;
+            margin-right: -30px;
             cursor: pointer;
             border: none;
             display: flex;
@@ -887,7 +890,9 @@ body {
             margin-left: 8px;
             font-size: 1.1rem;
         }
-        
+        .home-header-info .time-left{
+            margin-right: 100px;
+        }
     
 
         .e-find-title {
@@ -1488,9 +1493,9 @@ toggleSidebar();
               .substring(0, 10)}">
           </div>
           <div>
-            Time Left: <span style="color: var(--red-color); font-weight: 600;">00:00:00 H:M:S</span>
-          </div>
-          <button class="end-shift-btn">End Shift <i class="fas fa-power-off"></i></button>
+           Time Left: <span style="color: var(--red-color); font-weight: 600;">00:00:00 H:M:S</span>
+           </div>
+           <button class="end-shift-btn">End Shift <i class="fas fa-power-off"></i></button>
         </div>
 
         <h1 class="e-find-title">
