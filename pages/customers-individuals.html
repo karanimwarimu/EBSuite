@@ -250,7 +250,38 @@
         <div class="footer-controls">
             <div class="add-import-buttons">
                 <button onclick="navigateToAddPage()">
-                    <span class="icon-add-new">➕</span>
+                    <script>
+            
+                        function navigateToAddPage() {
+                        const container = document.getElementById('addPageContainer');
+                        const frame = document.getElementById('addPageFrame');
+
+                        // Load your external page
+                        frame.src = 'pages/add-customer.html';
+                        container.classList.add('active');
+                        container.style.display = 'flex';
+
+                        // Close when clicking outside the iframe
+                        container.addEventListener('click', function closeOnOutside(e) {
+                            if (e.target === container) {
+                            closeAddPage();
+                            container.removeEventListener('click', closeOnOutside);
+                            }
+                        });
+                        }
+
+                        function closeAddPage() {
+                        const container = document.getElementById('addPageContainer');
+                        const frame = document.getElementById('addPageFrame');
+                        container.classList.remove('active');
+                        setTimeout(() => {
+                            container.style.display = 'none';
+                            frame.src = ''; // unload iframe
+                        }, 200);
+                        }
+                        </script>
+
+                                    <span class="icon-add-new">➕</span>
                     Add New
                 </button>
                 <button>Import <span style="font-size: 14px;">🡹</span></button>
@@ -292,6 +323,45 @@
         </div>
     </div>
 
+     <style>
+                        /* === SINGLE CONTAINER OVERLAY === */
+            #addPageContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(1px); /* 💠 blurred background */
+            background: rgba(0, 0, 0, 0.1); /* slightly dimmed */
+            display: none; 
+            justify-content: flex-end;
+            align-items: center;
+            z-index: 3000;
+            }
+
+            /* === IFRAME PAGE CONTENT === */
+            #addPageContainer iframe {
+            width: 80%;     /* 70% width */
+            height: 95%;    /* 80% height */
+            border: none;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.25s ease;
+            transform: scale(0.95);
+            }
+
+            /* When shown, scale in */
+            #addPageContainer.active iframe {
+            transform: scale(1);
+            }
+
+     </style>
+ <div id="addPageContainer">
+  <iframe id="addPageFrame" src="" frameborder="0"></iframe>
+</div>
+  
+
    <script>
 (() => {
     // --- DATA ---
@@ -330,38 +400,13 @@
         customerModal.style.display = 'none';
     }
 
-    function showCustomerDetails(customer, isEdit) {
-        customerForm.dataset.action = isEdit ? 'edit' : 'view';
-        modalTitle.textContent = isEdit ? `Edit Customer: ${customer.id}` : `View Details: ${customer.id}`;
+  function showCustomerDetails(customer, isEdit) {
+    // Save the selected customer data in localStorage
+    localStorage.setItem('selectedCustomer', JSON.stringify(customer));
 
-        document.getElementById('modal_id').value = customer.id;
-        document.getElementById('modal_name').value = customer.name;
-        document.getElementById('modal_mobile').value = customer.mobile;
-        document.getElementById('modal_nationalId').value = customer.nationalId;
-
-        const readOnly = !isEdit;
-        document.getElementById('modal_name').readOnly = readOnly;
-        document.getElementById('modal_mobile').readOnly = readOnly;
-        document.getElementById('modal_nationalId').readOnly = readOnly;
-
-        customerModal.style.display = 'block';
-    }
-
-    function navigateToAddPage() {
-        customerForm.dataset.action = 'add';
-        modalTitle.textContent = 'Add New Customer';
-
-        document.getElementById('modal_id').value = 'New ID will be generated';
-        document.getElementById('modal_name').value = '';
-        document.getElementById('modal_mobile').value = '';
-        document.getElementById('modal_nationalId').value = '';
-
-        document.getElementById('modal_name').readOnly = false;
-        document.getElementById('modal_mobile').readOnly = false;
-        document.getElementById('modal_nationalId').readOnly = false;
-
-        customerModal.style.display = 'block';
-    }
+    // Navigate to the new form page
+    window.location.href = 'pages/add-customer.html';
+}
 
     function saveCustomer() {
         const action = customerForm.dataset.action;

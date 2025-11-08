@@ -1078,11 +1078,10 @@ body {
     </style>
 </head>
 
- 
-    <header id="header">
+  <header id="header">
     <h1 class="header-title">
-    <img src="images/logo.png" alt="Logo" class="logo">
-    XXXXXXXXXXX
+    <img src="" alt="Logo" class="logo">
+    EZZYBOOKS
     </h1>
     
 <div id="app-body" class="app-container">
@@ -1114,8 +1113,8 @@ body {
     </div>
    </header>
 
-    <div id="app-body" class="app-container">
-        <aside class="sidebar" id="sidebar">
+    <div id="app-body" class="app-container" >
+        <aside class="sidebar hidden" id="sidebar">
             <button class="sidebar-close-button" onclick="toggleSidebar()">
                 <i class="fas fa-times"></i>
             </button>
@@ -1410,8 +1409,6 @@ toggleSidebar();
 }
 
 
-
-
   // --- Window Controls ---
   function minimizeApp() {
     document.body.style.display = "none"; 
@@ -1489,26 +1486,28 @@ toggleSidebar();
 
   // --- SUP Dropdown ---
 
+
   function toggleSupMenu(el) {
-  const menu = document.getElementById("sup-dropdown-menu");
+    const menu = document.getElementById("sup-dropdown-menu");
 
-  // Toggle visibility
-  menu.classList.toggle("active");
+    // Toggle visibility
+    menu.classList.toggle("active");
 
-  // Close menu when clicking outside
-  function closeMenu(event) {
-    if (!el.contains(event.target) && !menu.contains(event.target)) {
-      menu.classList.remove("active");
+    // Close menu when clicking outside
+    function closeMenu(event) {
+      if (!el.contains(event.target) && !menu.contains(event.target)) {
+        menu.classList.remove("active");
+        document.removeEventListener("click", closeMenu);
+      }
+    }
+
+    if (menu.classList.contains("active")) {
+      document.addEventListener("click", closeMenu);
+    } else {
       document.removeEventListener("click", closeMenu);
     }
   }
 
-  if (menu.classList.contains("active")) {
-    document.addEventListener("click", closeMenu);
-  } else {
-    document.removeEventListener("click", closeMenu);
-  }
-}
 
 
   // --- Render Tabs ---
